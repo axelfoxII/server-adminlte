@@ -76,13 +76,13 @@ class UsuarioController {
   static editUsuario = async (req: Request, res: Response) => {
 
     let usuario;
-    const { usuarioId } = req.params;
-    const { email, role } = req.body;
+    const { id } = req.params;
+    const { nombre, email, role } = req.body;
     const usuarioRepository = getRepository(Usuario);
 
     try {
 
-      usuario = await usuarioRepository.findOneOrFail(usuarioId);
+      usuario = await usuarioRepository.findOneOrFail(id);
 
     } catch (e) {
       return res.status(404).json({
@@ -92,10 +92,11 @@ class UsuarioController {
       });
     }
 
-    usuario.email = email
+    usuario.nombre = nombre;
+    usuario.email = email;
     usuario.role = role;
     
-    usuario.role = role; 
+    
 
     const errors = await validate(usuario, { validationError: { target: false, value: false } });
 
