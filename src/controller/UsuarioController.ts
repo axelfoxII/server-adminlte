@@ -33,6 +33,7 @@ class UsuarioController {
     try {
 
       const usuario = await usuarioRepository.findOneOrFail(id);
+
       res.send(usuario);
     } catch (e) {
 
@@ -84,6 +85,7 @@ class UsuarioController {
 
       usuario = await usuarioRepository.findOneOrFail(id);
 
+
     } catch (e) {
       return res.status(404).json({
 
@@ -93,7 +95,7 @@ class UsuarioController {
     }
 
     usuario.nombre = nombre;
-    usuario.email = email;
+    usuario.email = email;   
     usuario.role = role;
     
     
@@ -105,7 +107,7 @@ class UsuarioController {
     }
 
     try {
-
+      
       await usuarioRepository.save(usuario);
 
     } catch (e) {
@@ -143,6 +145,59 @@ class UsuarioController {
     });
 
   }
+
+  static cambioPassword = async (req: Request, res: Response) => {
+
+    const { id } = req.params;
+    const { oldPassword, newPassword } = req.body;
+    if (!(oldPassword && newPassword)) {
+
+      res.status(400).json({
+        message: 'No coinciden las contraseñas'
+      });
+
+    }
+
+    const usuarioRepository = getRepository(Usuario);
+    let usuario: Usuario;
+
+    try {
+
+      usuario = await usuarioRepository.findOneOrFail(id);
+
+    } catch (e) {
+
+      res.status(400).json({
+
+        message: 'Porfavor hable con el administrador'
+
+      });
+
+    }
+
+    if (!usuario.checkPassword(oldPassword)) {
+      return res.status(401).json({
+        message: 'revisar el antiguo password'
+      });
+    }
+
+    usuario.password = newPassword;
+
+    const errors = await validate(usuario, { validationError: { target: false, value: false } });
+
+    if (errors.length > 0) {
+      return res.status(400).json(errors);
+    }
+
+    usuario.hashPassword();
+    usuarioRepository.save(usuario);
+
+    res.json({
+      message: 'Se actualizo el password'
+    });
+
+  }
+
 
 }
 

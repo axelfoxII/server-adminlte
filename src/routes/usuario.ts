@@ -25,5 +25,8 @@ router.put('/:id', [checkJwt, checkRole(['admin'])], UsuarioController.editUsuar
 
 router.delete('/:id', [checkJwt], checkRole(['admin']), UsuarioController.deleteUsuario);
 
+// Cambio password
+
+router.put('/cambio-password/:id', [checkJwt], UsuarioController.cambioPassword);
 
 export default router;
