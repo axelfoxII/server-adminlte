@@ -7,11 +7,11 @@ const router = Router();
 
 // Get all usuarios
 
-router.get('/', [checkJwt, checkRole(['admin'])], UsuarioController.getAll);
+router.get('/', [checkJwt, checkRole(['admin' ,'editor'])], UsuarioController.getAll);
 
 // Get one usuario
 
-router.get('/:id', [checkJwt, checkRole(['admin'])], UsuarioController.getById);
+router.get('/:id', [checkJwt, checkRole(['admin' ,'editor'])], UsuarioController.getById);
 
 //New Usuario
 
@@ -27,6 +27,6 @@ router.delete('/:id', [checkJwt], checkRole(['admin']), UsuarioController.delete
 
 // Cambio password
 
-router.put('/cambio-password/:id', [checkJwt], UsuarioController.cambioPassword);
+router.put('/cambio-password/:id', [checkJwt, checkRole(['admin'])], UsuarioController.cambioPassword);
 
 export default router;
